@@ -3,12 +3,17 @@ syntax = "proto3";
 package pb;
 option go_package = "./pb";
 
-message deposit_request {
+import "google/protobuf/timestamp.proto";
+
+
+message deposit {
   int64 wallet_id = 1;
   int64 balance = 2;
   bool above_threshold = 3;
+  repeated deposit_history deposit_history = 4;
 }
 
-
-
-
+message deposit_history {
+  int64 balance = 1;
+  google.protobuf.Timestamp created_at = 2;
+}
