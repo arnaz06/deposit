@@ -32,7 +32,8 @@ func (h *depositHandler) get(c echo.Context) error {
 
 	walletID, err := strconv.ParseInt(walletIDString, 10, 64)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, customerror.ValidationError(err.Error()))
+		res := map[string]string{"status": "failed", "message": err.Error()}
+		return c.JSON(http.StatusBadRequest, res)
 	}
 
 	deposit, err := h.service.Get(ctx, walletID)
@@ -51,10 +52,10 @@ func (h *depositHandler) deposit(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, customerror.ValidationError(err.Error()))
 	}
 
-	deposit, err := h.service.Deposit(ctx, input)
+	err := h.service.Deposit(ctx, input)
 	if err != nil {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, deposit)
+	return c.JSON(http.StatusOK, map[string]string{"status": "success"})
 }

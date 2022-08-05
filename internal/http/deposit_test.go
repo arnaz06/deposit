@@ -101,7 +101,7 @@ func TestDepositHandler_deposit(t *testing.T) {
 			mockService: testtools.MockCall{
 				Called: true,
 				Input:  []interface{}{mock.Anything, dep},
-				Output: []interface{}{dep, nil},
+				Output: []interface{}{nil},
 			},
 			expectedStatusCode: http.StatusOK,
 		},
@@ -111,7 +111,7 @@ func TestDepositHandler_deposit(t *testing.T) {
 			mockService: testtools.MockCall{
 				Called: true,
 				Input:  []interface{}{mock.Anything, dep},
-				Output: []interface{}{deposit.Deposit{}, errors.New("unexpected error")},
+				Output: []interface{}{errors.New("unexpected error")},
 			},
 			expectedStatusCode: http.StatusInternalServerError,
 		},
