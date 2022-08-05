@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package pb;
+option go_package = "./pb";
+
+message deposit_request {
+  int64 wallet_id = 1;
+  int64 balance = 2;
+  bool above_threshold = 3;
+}
+
+
+
+
