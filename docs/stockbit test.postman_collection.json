@@ -1,0 +1,55 @@
+{
+	"info": {
+		"_postman_id": "f4615450-dec0-4d2d-86ab-83f0d0494280",
+		"name": "stockbit test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Deposit",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/deposit/23",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"deposit",
+						"23"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Deposit",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"wallet_id\": 23,\n    \"balance\": 6000\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/deposit",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"deposit"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

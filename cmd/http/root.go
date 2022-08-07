@@ -46,7 +46,12 @@ func initApp() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	go view.Run(context.Background())
+	go func() {
+		err = view.Run(context.Background())
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
 
 	emitter, err := goka.NewEmitter([]string{os.Getenv("BROKER_URL")}, topic, new(deposit.DepositDecoder))
 	if err != nil {

@@ -59,7 +59,10 @@ func runProcessor(initialized chan struct{}) {
 
 	close(initialized)
 
-	p.Run(context.Background())
+	err = p.Run(context.Background())
+	if err != nil {
+		panic(err)
+	}
 }
 
 func initApp() {
