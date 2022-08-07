@@ -6,9 +6,9 @@ import (
 	"fmt"
 
 	"github.com/arnaz06/deposit"
+	"github.com/arnaz06/deposit/customerror"
 	"github.com/arnaz06/deposit/pb"
 	"github.com/lovoo/goka"
-	"google.golang.org/protobuf/proto"
 )
 
 type depositRepo struct {
@@ -27,6 +27,7 @@ func NewDepositRepository(gokaView *goka.View, gokaEmit *goka.Emitter) DepositRe
 
 func (r *depositRepo) Get(ctx context.Context, walletID int64) (deposit.Deposit, error) {
 	dep := deposit.Deposit{}
+
 	res, err := r.gokaView.Get(fmt.Sprintf("%d", walletID))
 	if err != nil {
 		return dep, err
@@ -41,15 +42,15 @@ func (r *depositRepo) Get(ctx context.Context, walletID int64) (deposit.Deposit,
 		return dep, err
 	}
 
+	if dep.WalletID == 0 {
+		return dep, customerror.ErrorNotFoundf("walletID %d not found", walletID)
+	}
+
 	return dep, nil
 }
 
 func (r *depositRepo) Deposit(ctx context.Context, input *pb.Deposit) error {
-	data, err := proto.Marshal(input)
-	if err != nil {
-		return err
-	}
-	err = r.gokaEmit.EmitSync(fmt.Sprintf("%d", &input.WalletId), data)
+	err := r.gokaEmit.EmitSync(fmt.Sprintf("%d", input.WalletId), input)
 	if err != nil {
 		return err
 	}
