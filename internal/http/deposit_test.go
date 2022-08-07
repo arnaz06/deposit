@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/arnaz06/deposit"
+	"github.com/arnaz06/deposit/customerror"
 	handler "github.com/arnaz06/deposit/internal/http"
 	"github.com/arnaz06/deposit/mocks"
 	"github.com/arnaz06/deposit/testtools"
@@ -62,6 +63,19 @@ func TestDepositHandler_get(t *testing.T) {
 				Output: []interface{}{deposit.Deposit{}, errors.New("unexpected error")},
 			},
 			expectedStatusCode: http.StatusInternalServerError,
+		},
+		{
+			testname: "error wallet not found",
+			walletID: "1",
+			mockService: testtools.MockCall{
+				Called: true,
+				Input: []interface{}{
+					mock.Anything,
+					int64(1),
+				},
+				Output: []interface{}{deposit.Deposit{}, customerror.ErrorNotFoundf("wallet %d not found", 1)},
+			},
+			expectedStatusCode: http.StatusNotFound,
 		},
 	}
 
