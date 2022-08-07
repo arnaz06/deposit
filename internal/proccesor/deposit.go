@@ -30,22 +30,37 @@ func Proccess(ctx goka.Context, msg interface{}) {
 	}
 
 	if !dep.AboveThreshold {
-		if len(dep.DepositHistory) == 0 {
-			if dep.Balance >= 10000 {
-				dep.AboveThreshold = true
-			}
-		} else {
-			diff := dep.DepositHistory[len(dep.DepositHistory)-1].CreatedAt.AsTime().Unix() - time.Now().Unix()
-			if diff < 120 && dep.Balance > 10000 {
-				dep.AboveThreshold = true
-			}
-		}
+		dep.AboveThreshold = thresholdResolver(dep.DepositHistory, dep.Balance, time.Now())
 	}
 
 	dep.DepositHistory = append(dep.DepositHistory, &pb.DepositHistory{
 		Balance:   dep.Balance,
-		CreatedAt: timestamppb.New(time.Now().Add(time.Hour * 1)),
+		CreatedAt: timestamppb.New(time.Now()),
 	})
+
 	ctx.SetValue(dep)
 	fmt.Printf("success consume data %+v\n", dep)
+}
+
+func thresholdResolver(input []*pb.DepositHistory, inputtedAmount int64, currentTime time.Time) bool {
+	if len(input) == 0 {
+		return inputtedAmount > 10000
+	}
+
+	thresholdTime := int64(120)
+	thresholdBalance := int64(10000)
+	total := inputtedAmount
+	var diff int64
+	for i := len(input) - 1; i >= 0; i-- {
+		diff += currentTime.Unix() - input[i].CreatedAt.AsTime().Unix()
+		if diff > thresholdTime {
+			break
+		}
+		total += input[i].Balance
+		if total > thresholdBalance {
+			return true
+		}
+	}
+
+	return false
 }
